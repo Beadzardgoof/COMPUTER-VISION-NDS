@@ -24,7 +24,10 @@ def start_camera():
 
         # Get frame dimensions
         height, width, _ = frame.shape
-        center_x, center_y = width // 2, height // 2
+        if not saved_centroid == None:
+            center_x, center_y = saved_centroid[0], saved_centroid[1]
+        else:
+            center_x, center_y = width//2, height//2
 
         # Read slider value safely
         with lock:
@@ -56,6 +59,8 @@ def start_camera():
         current_centroid = None
         if coords is not None:
             mean_coords = np.mean(coords, axis=0).astype(int)
+            if saved_centroid == None:
+                saved_centroid = (mean_coords[0][0], mean_coords[0][1])
             current_centroid = (mean_coords[0][0], mean_coords[0][1])
             cv2.circle(frame, current_centroid, 5, (255, 0, 0), -1)  # Draw current centroid
 
